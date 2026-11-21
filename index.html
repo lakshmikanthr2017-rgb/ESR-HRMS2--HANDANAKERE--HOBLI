@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Karnataka HRMS 2.0 - e-Service Register (ESR)</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+    .top-header {
+      background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+      color: #ffffff;
+      padding: 16px 20px;
+      text-align: center;
+    }
+    .board-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin: 0;
+    }
+    .board-subtitle {
+      font-size: 0.92rem;
+      margin-top: 4px;
+      opacity: 0.95;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 14px;
+      background: #e2e8f0;
+      border-bottom: 1px solid #cbd5e1;
+      align-items: center;
+    }
+    .tab-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 10px 14px;
+      background: #ffffff;
+      border-bottom: 2px solid #cbd5e1;
+    }
+    .tab-btn {
+      padding: 8px 12px;
+      border: 1px solid #94a3b8;
+      background: #f8fafc;
+      color: #0f172a;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .tab-btn.active {
+      background: #1d4ed8;
+      color: #ffffff;
+      border-color: #1d4ed8;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 14px auto 80px;
+      padding: 0 12px;
+    }
+    .section-panel {
+      display: none;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .section-panel.active {
+      display: block;
+    }
+    h3 {
+      margin-top: 0;
+      color: #1e3a8a;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 6px;
+    }
+    table.esr-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+    }
+    table.esr-table td, table.esr-table th {
+      border: 1px solid #cbd5e1;
+      padding: 7px 8px;
+      vertical-align: top;
+    }
+    .field-label {
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: block;
+      margin-bottom: 4px;
+    }
+    input[type="text"],
+    input[type="date"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 7px 9px;
+      border: 1px solid #94a3b8;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .kn-input {
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .btn {
+      padding: 7px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-sm { padding: 5px 9px; font-size: 0.8rem; }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-success { background: #16a34a; color: #fff; }
+    .btn-danger { background: #dc2626; color: #fff; }
+    .btn-dark { background: #334155; color: #fff; }
+    .btn-amber { background: #d97706; color: #fff; }
+    .repeat-item {
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #f8fafc;
+    }
+    .repeat-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .photo-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px;
+      background: #f8fafc;
+    }
+    .photo-preview {
+      width: 110px;
+      height: 130px;
+      border: 1px dashed #94a3b8;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: #fff;
+      margin: 8px 0;
+    }
+    .photo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .badge-kb {
+      display: inline-block;
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+    #cameraModal {
+      display: none;
+    }
+    #cameraModal.open {
+      display: flex;
+    }
+    .banner-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(90deg, #0f172a, #1e3a8a, #0f172a);
+      color: #f8fafc;
+      text-align: center;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      z-index: 999;
+    }
+    @media print {
+      .toolbar, .tab-bar, .banner-footer, .no-print, #adminLockedBox, #adminUnlockedBox, #settingsBox {
+        display: none !important;
+      }
+      .section-panel {
+        display: block !important;
+        border: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="top-header">
+    <div class="board-title" contenteditable="true">KARNATAKA HRMS 2.0 - e-SERVICE REGISTER (ESR)</div>
+    <div class="board-subtitle" contenteditable="true">Employee Service Record &amp; Document Portal</div>
+  </header>
+
+  <div class="toolbar">
+    <button type="button" class="btn btn-success" onclick="saveLocalDraft()">Save Draft</button>
+    <button type="button" id="btnCloudSubmit" class="btn btn-primary" onclick="submitToGoogleSheet()">Submit Data</button>
+    <button type="button" class="btn btn-amber" onclick="downloadEmployeePDF()">Download PDF</button>
+    <button type="button" class="btn btn-dark" onclick="downloadEmployeeExcel()">Download Excel (.xls)</button>
+    <button type="button" class="btn btn-primary" onclick="openAdminPanel()">Admin</button>
+    <button type="button" class="btn btn-dark" onclick="toggleSettingsBox()">Setup Link</button>
+    <button type="button" class="btn btn-danger" onclick="clearAllData()">Clear</button>
+  </div>
+
+  <div id="settingsBox" class="section-panel" style="max-width:1100px;margin:10px auto;">
+    <h3>Portal &amp; Cloud Settings</h3>
+    <table class="esr-table">
+      <tr>
+        <td>
+          <span class="field-label">Google Apps Script Web App URL</span>
+          <input type="text" id="gasUrlInput" placeholder="https://script.google.com/macros/s/.../exec" />
+        </td>
+        <td>
+          <span class="field-label">Admin PIN</span>
+          <input type="password" id="adminPinInput" placeholder="2026" />
+        </td>
+      </tr>
+    </table>
+    <button type="button" class="btn btn-primary btn-sm" onclick="saveSettings()">Save Settings</button>
+  </div>
+
+  <div class="tab-bar">
+    <button type="button" class="tab-btn active" onclick="openTab('part1a', this)">Part I (A): Basic Info</button>
+    <button type="button" class="tab-btn" onclick="openTab('part1bc', this)">Part I (B-C): Address &amp; ID</button>
+    <button type="button" class="tab-btn" onclick="openTab('part2', this)">Part II: Education &amp; Exam</button>
+    <button type="button" class="tab-btn" onclick="openTab('part3', this)">Part III: Family &amp; Nominee</button>
+    <button type="button" class="tab-btn" onclick="openTab('part4a', this)">Part IV: Service &amp; Pay</button>
+    <button type="button" class="tab-btn" onclick="openTab('panel-upload-docs', this)">Photos, Docs &amp; Export</button>
+  </div>
+
+  <div class="container">
+    <form id="esrForm" onsubmit="event.preventDefault();">
+      <!-- Part I (A) -->
+      <div id="part1a" class="section-panel active">
+        <h3>Part I (A): Employee Basic Information</h3>
+        <table class="esr-table">
+          <tr>
+            <td>
+              <span class="field-label">Employee Name (English)*</span>
+              <input type="text" name="emp_name_en" data-kn-target="emp_name_kn" oninput="handleTransliterate(this)" required />
+            </td>
+            <td>
+              <span class="field-label">ಸಿಬ್ಬಂದಿ ಹೆಸರು (ಕನ್ನಡ)</span>
+              <input type="text" name="emp_name_kn" class="kn-input" />
+            </td>
+            <td>
+              <span class="field-label">KGID Number</span>
+              <input type="text" name="kgid_no" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span class="field-label">Date of Birth</span>
+              <input type="date" name="dob" onchange="autoFillDobWords(this.value)" />
+            </td>
+            <td>
+              <span class="field-label">DOB in Words</span>
+              <input type="text" name="dob_words" />
+            </td>
+            <td>
+              <span class="field-label">Mobile Number</span>
+              <input type="tel" name="mobile_no" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span class="field-label">Designation (English)</span>
+              <input type="text" name="designation_en" data-kn-target="designation_kn" oninput="handleTransliterate(this)" />
+            </td>
+            <td>
+              <span class="field-label">ಹುದ್ದೆ (ಕನ್ನಡ)</span>
+              <input type="text" name="designation_kn" class="kn-input" />
+            </td>
+            <td>
+              <span class="field-label">Email ID</span>
+              <input type="email" name="email_id" />
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Part I (B-C) -->
+      <div id="part1bc" class="section-panel">
+        <h3>Part I (B-C): Address &amp; Identity Details</h3>
+        <table class="esr-table">
+          <tr>
+            <td>
+              <span class="field-label">Office / School Name (English)</span>
+              <input type="text" name="office_name_en" data-kn-target="office_name_kn" oninput="handleTransliterate(this)" />
+            </td>
+            <td>
+              <span class="field-label">ಕಚೇರಿ / ಶಾಲೆಯ ಹೆಸರು (ಕನ್ನಡ)</span>
+              <input type="text" name="office_name_kn" class="kn-input" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span class="field-label">Permanent Address (English)</span>
+              <input type="text" name="perm_addr_en" data-kn-target="perm_addr_kn" oninput="handleTransliterate(this)" />
+            </td>
+            <td>
+              <span class="field-label">ಶಾಶ್ವತ ವಿಳಾಸ (ಕನ್ನಡ)</span>
+              <input type="text" name="perm_addr_kn" class="kn-input" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span class="field-label">PAN Number</span>
+              <input type="text" name="pan_no" />
+            </td>
+            <td>
+              <span class="field-label">Aadhaar / PRAN / NPS</span>
+              <input type="text" name="pran_no" />
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Part II -->
+      <div id="part2" class="section-panel">
+        <h3>Part II: Educational Qualifications &amp; Departmental Exams</h3>
+        <div id="eduContainer"></div>
+        <button type="button" class="btn btn-primary btn-sm no-print" onclick="addEduRow()">+ Add Qualification</button>
+
+        <h3 style="margin-top:18px;">Departmental Exams / Trainings</h3>
+        <div id="examContainer"></div>
+        <button type="button" class="btn btn-primary btn-sm no-print" onclick="addExamRow()">+ Add Exam / Training</button>
+      </div>
+
+      <!-- Part III -->
+      <div id="part3" class="section-panel">
+        <h3>Part III: Family &amp; Nomination Details</h3>
+        <div id="familyContainer"></div>
+        <button type="button" class="btn btn-primary btn-sm no-print" onclick="addFamilyRow()">+ Add Family Member</button>
+
+        <h3 style="margin-top:18px;">Nominations</h3>
+        <div id="nomineeContainer"></div>
+        <button type="button" class="btn btn-primary btn-sm no-print" onclick="addNomineeRow()">+ Add Nomination</button>
+      </div>
+
+      <!-- Part IV (A) -->
+      <div id="part4a" class="section-panel">
+        <h3>Part IV: Service Entry, Pay &amp; Promotions</h3>
+        <table class="esr-table">
+          <tr>
+            <td>
+              <span class="field-label">Date of Initial Appointment</span>
+              <input type="date" name="doj_service" />
+            </td>
+            <td>
+              <span class="field-label">Current Pay Scale &amp; Basic Pay</span>
+              <input type="text" name="payscale_basic" />
+            </td>
+          </tr>
+        </table>
+        <div id="promoContainer"></div>
+        <button type="button" class="btn btn-primary btn-sm no-print" onclick="addPromoRow()">+ Add Service / Pay Record</button>
+      </div>
+
+      <!-- Photos, Documents & Export Tab -->
+      <div id="panel-upload-docs" class="section-panel">
+        <h3>Photos &amp; Documents Capture / Upload</h3>
+        <div class="photo-grid">
+          <div class="photo-card">
+            <strong>Employee Photo (&le;100 KB)</strong>
+            <div id="empPhotoPreview" class="photo-preview">No Photo</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;">
+              <input type="file" accept="image/*" onchange="processImageFile(event, 'emp')" />
+              <button type="button" class="btn btn-primary btn-sm" onclick="openCamera('emp', 'user')">Front Cam</button>
+              <button type="button" class="btn btn-dark btn-sm" onclick="openCamera('emp', 'environment')">Rear Cam</button>
+            </div>
+            <span id="empPhotoMeta" class="badge-kb" style="display:none;"></span>
+          </div>
+
+          <div class="photo-card">
+            <strong>Family Photo (&le;100 KB)</strong>
+            <div id="famPhotoPreview" class="photo-preview">No Photo</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;">
+              <input type="file" accept="image/*" onchange="processImageFile(event, 'fam')" />
+              <button type="button" class="btn btn-primary btn-sm" onclick="openCamera('fam', 'environment')">Rear Cam</button>
+              <button type="button" class="btn btn-dark btn-sm" onclick="openCamera('fam', 'user')">Front Cam</button>
+            </div>
+            <span id="famPhotoMeta" class="badge-kb" style="display:none;"></span>
+          </div>
+        </div>
+
+        <table class="esr-table">
+          <tr>
+            <td>
+              <span class="field-label">SSLC Certificate</span>
+              <input type="file" accept="image/*,.pdf" onchange="handleDocUpload(event, 'sslc_doc')" />
+              <button type="button" class="btn btn-primary btn-sm" style="margin-top:6px;" onclick="openCamera('sslc_doc', 'environment')">Rear Cam</button>
+              <button type="button" class="btn btn-dark btn-sm" style="margin-top:6px;" onclick="openCamera('sslc_doc', 'user')">Front Cam</button>
+              <span id="meta_sslc_doc" class="badge-kb" style="display:none;"></span>
+            </td>
+            <td>
+              <span class="field-label">PUC Certificate</span>
+              <input type="file" accept="image/*,.pdf" onchange="handleDocUpload(event, 'puc_doc')" />
+              <button type="button" class="btn btn-primary btn-sm" style="margin-top:6px;" onclick="openCamera('puc_doc', 'environment')">Rear Cam</button>
+              <button type="button" class="btn btn-dark btn-sm" style="margin-top:6px;" onclick="openCamera('puc_doc', 'user')">Front Cam</button>
+              <span id="meta_puc_doc" class="badge-kb" style="display:none;"></span>
+            </td>
+            <td>
+              <span class="field-label">Degree / D.Ed / B.Ed Certificate</span>
+              <input type="file" accept="image/*,.pdf" onchange="handleDocUpload(event, 'degree_doc')" />
+              <button type="button" class="btn btn-primary btn-sm" style="margin-top:6px;" onclick="openCamera('degree_doc', 'environment')">Rear Cam</button>
+              <button type="button" class="btn btn-dark btn-sm" style="margin-top:6px;" onclick="openCamera('degree_doc', 'user')">Front Cam</button>
+              <span id="meta_degree_doc" class="badge-kb" style="display:none;"></span>
+            </td>
+          </tr>
+        </table>
+
+        <div id="otherDocsList"></div>
+        <button type="button" class="btn btn-primary btn-sm no-print" onclick="addOtherDocSlot()">+ Add Other Document</button>
+
+        <div id="photoDownloadCards" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;"></div>
+
+        <div id="adminLockedBox" style="margin-top:16px;padding:12px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;">
+          <button type="button" class="btn btn-dark btn-sm" onclick="unlockAdminView()">Unlock Admin View</button>
+        </div>
+
+        <div id="adminUnlockedBox" style="display:none;margin-top:16px;padding:12px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;">
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+            <button type="button" class="btn btn-success btn-sm" onclick="saveCurrentToAllEmployees()">Save Current to List</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="downloadAllEmployeesCSV()">Download All Employees (.xls)</button>
+            <span id="allEmployeesSummary" style="font-weight:700;font-size:0.85rem;"></span>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Full-size Camera Modal -->
+  <div id="cameraModal">
+    <video id="cameraStream" autoplay playsinline></video>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:8px 0;">
+      <button type="button" class="btn btn-success" onclick="snapCameraPhoto()">Capture Photo</button>
+      <button type="button" class="btn btn-danger" onclick="closeCamera()">Close Camera</button>
+    </div>
+  </div>
+
+  <footer class="banner-footer">
+    Karnataka HRMS 2.0 e-Service Register Portal
+  </footer>
+
+  <script>
+    const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbwHlm1Wac4s8a49jz_zZIdxdi5TfWqsRE_mfl8B3LtBjHxfJ88UHZMTlreeSxw61EIdtg/exec";
+
+    let photoStore = { emp: "", fam: "" };
+    let docStore = { sslc_doc: null, puc_doc: null, degree_doc: null, other_docs: [] };
+    let activeCamTarget = "emp";
+    let activeCamFacing = "user"; // "user" (front) or "environment" (rear)
+    let mediaStream = null;
+    let translitTimers = {};
+    let adminUnlocked = false;
+
+    // Part IV (5-13) tab removed from mapping
+    const TAB_PANEL_MAP = {
+      "part1a": 0,
+      "part1bc": 1,
+      "part2": 2,
+      "part3": 3,
+      "part4a": 4,
+      "panel-upload-docs": 5
+    };
+
+    function getActiveGasUrl() {
+      return (localStorage.getItem("esr_gas_url") || DEFAULT_GAS_URL || "").trim();
+    }
+
+    function getAdminPin() {
+      return localStorage.getItem("esr_admin_pin") || "2026";
+    }
+
+    function toggleSettingsBox() {
+      const box = document.getElementById("settingsBox");
+      if (!box) return;
+      box.style.display = box.style.display === "block" ? "none" : "block";
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function formatFieldLabel(key) {
+      return key
+        .replace(/\[\]$/, "")
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (ch) => ch.toUpperCase());
+    }
+
+    function sanitizeFilePart(str, fallback = "NA") {
+      const cleaned = String(str || "")
+        .trim()
+        .replace(/[^a-zA-Z0-9\u0C80-\u0CFF_-]+/g, "_")
+        .replace(/^_+|_+$/g, "");
+      return cleaned || fallback;
+    }
+
+    function getEmployeeFileBaseName(data = null) {
+      const rec = data || collectFormData();
+      const empName = sanitizeFilePart(rec.emp_name_en || rec.emp_name_kn || "Employee", "Employee");
+      const kgid = sanitizeFilePart(rec.kgid_no || "NoKGID", "NoKGID");
+      return `${empName}_${kgid}`;
+    }
+
+    function removePart4bTabIfPresent() {
+      const panel4b = document.getElementById("part4b");
+      if (panel4b) panel4b.remove();
+
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        const txt = (btn.textContent || "").toLowerCase();
+        const onclickAttr = btn.getAttribute("onclick") || "";
+        if (onclickAttr.includes("part4b") || txt.includes("5-13")) {
+          btn.remove();
+        }
+      });
+    }
+
+    function cleanUploadTabExtras() {
+      const panel = document.getElementById("panel-upload-docs");
+      if (!panel) return;
+
+      const hideSelectors = [
+        "#copyPasteList",
+        ".copy-row",
+        ".copy-val",
+        ".info-box",
+        ".note-box",
+        ".helper-text",
+        ".tab-info"
+      ];
+      hideSelectors.forEach((sel) => {
+        panel.querySelectorAll(sel).forEach((el) => {
+          el.innerHTML = "";
+          el.style.display = "none";
+        });
+      });
+
+      panel.querySelectorAll("p, small, .hint").forEach((el) => {
+        if (!el.closest(".photo-card") && !el.closest(".repeat-item")) {
+          el.style.display = "none";
+        }
+      });
+    }
+
+    function openTab(panelId, btnEl) {
+      if (panelId === "part4b") panelId = "part4a";
+      removePart4bTabIfPresent();
+
+      document.querySelectorAll(".section-panel").forEach((p) => {
+        if (p.id !== "settingsBox") p.classList.remove("active");
+      });
+      document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+
+      const targetPanel = document.getElementById(panelId);
+      if (targetPanel) targetPanel.classList.add("active");
+
+      const tabButtons = document.querySelectorAll(".tab-btn");
+      if (btnEl && btnEl.classList && btnEl.classList.contains("tab-btn")) {
+        btnEl.classList.add("active");
+      } else if (panelId in TAB_PANEL_MAP && tabButtons[TAB_PANEL_MAP[panelId]]) {
+        tabButtons[TAB_PANEL_MAP[panelId]].classList.add("active");
+      }
+
+      if (panelId === "panel-upload-docs") {
+        cleanUploadTabExtras();
+        ensureEmployeeDownloadButtons();
+        renderPhotoAndDocCards();
+        if (adminUnlocked) {
+          renderAdminEmployeeDropdown();
+          renderAllEmployeesSummary();
+        }
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openAdminPanel() {
+      openTab("panel-upload-docs");
+      if (!adminUnlocked) unlockAdminView();
+    }
+
+    async function unlockAdminView() {
+      const entered = prompt("Enter Creator/Admin PIN (Default: 2026):");
+      if (entered !== getAdminPin()) {
+        if (entered !== null) alert("Incorrect Admin PIN!");
+        return;
+      }
+
+      adminUnlocked = true;
+      const lockedBox = document.getElementById("adminLockedBox");
+      const unlockedBox = document.getElementById("adminUnlockedBox");
+      if (lockedBox) lockedBox.style.display = "none";
+      if (unlockedBox) unlockedBox.style.display = "block";
+
+      const gasUrl = getActiveGasUrl();
+      if (gasUrl && gasUrl.startsWith("https://script.google.com/macros/s/")) {
+        try {
+          const res = await fetch(gasUrl);
+          const json = await res.json();
+          if (json && Array.isArray(json.records) && json.records.length > 0) {
+            localStorage.setItem("hrms_all_employees_v1", JSON.stringify(json.records));
+            loadEmployeeIntoForm(json.records[json.records.length - 1]);
+          }
+        } catch (e) {}
+      }
+
+      cleanUploadTabExtras();
+      renderAdminEmployeeDropdown();
+      renderPhotoAndDocCards();
+      renderAllEmployeesSummary();
+    }
+
+    function loadEmployeeIntoForm(data) {
+      if (!data) return;
+      Object.keys(data).forEach((k) => {
+        if (k.startsWith("_") || k.endsWith("[]")) return;
+        const el = document.querySelector(`[name="${k}"]`);
+        if (el) el.value = data[k];
+      });
+
+      if (data._empPhoto) {
+        photoStore.emp = data._empPhoto;
+        const prev = document.getElementById("empPhotoPreview");
+        if (prev) prev.innerHTML = `<img src="${data._empPhoto}" alt="Employee Photo">`;
+      }
+      if (data._famPhoto) {
+        photoStore.fam = data._famPhoto;
+        const fprev = document.getElementById("famPhotoPreview");
+        if (fprev) fprev.innerHTML = `<img src="${data._famPhoto}" alt="Family Photo">`;
+      }
+      if (data._docs && typeof data._docs === "object") {
+        docStore = Object.assign(
+          { sslc_doc: null, puc_doc: null, degree_doc: null, other_docs: [] },
+          data._docs
+        );
+      }
+    }
+
+    function renderAdminEmployeeDropdown() {
+      const box = document.getElementById("adminUnlockedBox");
+      if (!box) return;
+
+      const list = getAllEmployeesList();
+      let select = document.getElementById("adminEmployeeSelect");
+
+      if (!select) {
+        const wrap = document.createElement("div");
+        wrap.style.cssText = "margin:10px 0;padding:10px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:6px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;";
+        wrap.innerHTML = `
+          <label for="adminEmployeeSelect" style="font-weight:700;font-size:0.85rem;">Select Employee:</label>
+          <select id="adminEmployeeSelect" style="padding:6px 10px;border-radius:4px;border:1px solid #94a3b8;min-width:240px;"></select>
+        `;
+        box.insertBefore(wrap, box.firstChild);
+        select = document.getElementById("adminEmployeeSelect");
+        select.addEventListener("change", () => {
+          const idx = Number(select.value);
+          const records = getAllEmployeesList();
+          if (!isNaN(idx) && records[idx]) {
+            loadEmployeeIntoForm(records[idx]);
+            renderPhotoAndDocCards();
+          }
+        });
+      }
+
+      select.innerHTML = "";
+      if (!list.length) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "No submitted employees yet";
+        select.appendChild(opt);
+        return;
+      }
+
+      list.forEach((rec, i) => {
+        const opt = document.createElement("option");
+        opt.value = String(i);
+        const namePart = rec.emp_name_en || rec.emp_name_kn || "Unnamed";
+        const kgidPart = rec.kgid_no ? ` (${rec.kgid_no})` : "";
+        opt.textContent = `${i + 1}. ${namePart}${kgidPart}`;
+        select.appendChild(opt);
+      });
+
+      select.value = String(list.length - 1);
+    }
+
+    // English -> Kannada Transliteration
+    function handleTransliterate(inputEl) {
+      const targetName = inputEl.getAttribute("data-kn-target");
+      if (!targetName) return;
+      const targetEl = document.querySelector(`[name="${targetName}"]`);
+      if (!targetEl) return;
+      clearTimeout(translitTimers[targetName]);
+      const text = inputEl.value.trim();
+      if (!text) {
+        targetEl.value = "";
+        return;
+      }
+
+      targetEl.value = offlinePhoneticKannada(text);
+
+      translitTimers[targetName] = setTimeout(() => {
+        transliterateToKannada(text, targetName, (knResult) => {
+          if (knResult && inputEl.value.trim() === text) {
+            targetEl.value = knResult;
+          }
+        });
+      }, 220);
+    }
+
+    function transliterateToKannada(text, targetName, callback) {
+      const cbName = "kn_cb_" + targetName + "_" + Math.floor(Math.random() * 1000000);
+      let done = false;
+      const script = document.createElement("script");
+      const timer = setTimeout(() => {
+        if (!done) {
+          done = true;
+          cleanup();
+          callback(offlinePhoneticKannada(text));
+        }
+      }, 1800);
+
+      function cleanup() {
+        clearTimeout(timer);
+        delete window[cbName];
+        if (script.parentNode) script.parentNode.removeChild(script);
+      }
+
+      window[cbName] = function (data) {
+        if (done) return;
+        done = true;
+        cleanup();
+        if (Array.isArray(data) && data[0] === "SUCCESS" && data[1] && data[1][0] && data[1][0][1] && data[1][0][1][0]) {
+          callback(data[1][0][1][0]);
+        } else {
+          callback(offlinePhoneticKannada(text));
+        }
+      };
+
+      script.src = `https://inputtools.google.com/request?text=${encodeURIComponent(text)}&itc=kn-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8&callback=${cbName}`;
+      script.onerror = function () {
+        if (!done) {
+          done = true;
+          cleanup();
+          callback(offlinePhoneticKannada(text));
+        }
+      };
+      document.body.appendChild(script);
+    }
+
+    function offlinePhoneticKannada(str) {
+      return str.split(/(\s+)/).map((w) => (/^\s+$/.test(w) ? w : transliterateWordKannada(w))).join("");
+    }
+
+    function transliterateWordKannada(word) {
+      const w = word.toLowerCase();
+      const vowels = { a: "ಅ", aa: "ಆ", i: "ಇ", ee: "ಈ", u: "ಉ", oo: "ಊ", ru: "ಋ", e: "ಎ", ae: "ಏ", ai: "ಐ", o: "ಒ", au: "ಔ", ou: "ಔ" };
+      const matras = { a: "", aa: "ಾ", i: "ಿ", ee: "ೀ", u: "ು", oo: "ೂ", ru: "ೃ", e: "ೆ", ae: "ೇ", ai: "ೈ", o: "ೊ", au: "ೌ", ou: "ೌ" };
+      const virama = "್";
+      const cons = [
+        ["ksh", "ಕ್ಷ"], ["jnj", "ಜ್ಞ"], ["sh", "ಶ"], ["ch", "ಚ"], ["th", "ಥ"], ["dh", "ಧ"], ["bh", "ಭ"], ["ph", "ಫ"], ["kh", "ಖ"], ["gh", "ಘ"],
+        ["k", "ಕ"], ["g", "ಗ"], ["c", "ಕ"], ["j", "ಜ"], ["t", "ಟ"], ["d", "ಡ"], ["n", "ನ"], ["p", "ಪ"], ["b", "ಬ"], ["m", "ಮ"],
+        ["y", "ಯ"], ["r", "ರ"], ["l", "ಲ"], ["v", "ವ"], ["w", "ವ"], ["s", "ಸ"], ["h", "ಹ"]
+      ];
+      const vowelKeys = Object.keys(vowels).sort((a, b) => b.length - a.length);
+      let out = "", i = 0, lastWasConsonant = false;
+
+      while (i < w.length) {
+        let matchedCons = cons.find(([k]) => w.startsWith(k, i));
+        if (matchedCons) {
+          if (lastWasConsonant) out += virama;
+          out += matchedCons[1];
+          i += matchedCons[0].length;
+          lastWasConsonant = true;
+          continue;
+        }
+        let matchedVowel = vowelKeys.find((vk) => w.startsWith(vk, i));
+        if (matchedVowel) {
+          out += lastWasConsonant ? matras[matchedVowel] : vowels[matchedVowel];
+          lastWasConsonant = false;
+          i += matchedVowel.length;
+          continue;
+        }
+        if (lastWasConsonant) { out += virama; lastWasConsonant = false; }
+        out += w[i++];
+      }
+      if (lastWasConsonant) out += virama;
+      return out;
+    }
+
+    function autoFillDobWords(val) {
+      if (!val) return;
+      const [y, m, d] = val.split("-").map(Number);
+      const months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      const el = document.querySelector('[name="dob_words"]');
+      if (el) el.value = `${d} ${months[m]} ${y}`;
+    }
+
+    // Photo & Document compression <= 100 KB (.jpg)
+    function compressImageTo100KB(imgSource, targetKey) {
+      const canvas = document.createElement("canvas");
+      let width = imgSource.width || imgSource.videoWidth || 800;
+      let height = imgSource.height || imgSource.videoHeight || 600;
+      const maxDim = targetKey === "emp" ? 600 : 1200;
+      if (width > maxDim || height > maxDim) {
+        if (width > height) {
+          height = Math.round((height * maxDim) / width);
+          width = maxDim;
+        } else {
+          width = Math.round((width * maxDim) / height);
+          height = maxDim;
+        }
+      }
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(imgSource, 0, 0, width, height);
+
+      let quality = 0.88;
+      let dataUrl = canvas.toDataURL("image/jpeg", quality);
+      while (Math.round((dataUrl.length * 3) / 4) > 98 * 1024 && quality > 0.15) {
+        quality -= 0.07;
+        dataUrl = canvas.toDataURL("image/jpeg", quality);
+      }
+      const kbSize = (Math.round((dataUrl.length * 3) / 4) / 1024).toFixed(1);
+
+      if (targetKey === "emp" || targetKey === "fam") {
+        photoStore[targetKey] = dataUrl;
+        const previewEl = document.getElementById(targetKey === "emp" ? "empPhotoPreview" : "famPhotoPreview");
+        const metaEl = document.getElementById(targetKey === "emp" ? "empPhotoMeta" : "famPhotoMeta");
+        if (previewEl) previewEl.innerHTML = `<img src="${dataUrl}" alt="Photo">`;
+        if (metaEl) {
+          metaEl.style.display = "inline-block";
+          metaEl.textContent = `Ready: ${kbSize} KB (.JPG)`;
+        }
+      } else {
+        const baseName = getEmployeeFileBaseName();
+        docStore[targetKey] = {
+          name: `${baseName}_${targetKey}.jpg`,
+          type: "image/jpeg",
+          dataUrl
+        };
+        const meta = document.getElementById("meta_" + targetKey);
+        if (meta) {
+          meta.style.display = "inline-block";
+          meta.textContent = `Captured: ${kbSize} KB (.JPG)`;
+        }
+      }
+      renderPhotoAndDocCards();
+    }
+
+    function processImageFile(event, targetKey) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => compressImageTo100KB(img, targetKey);
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Full-size Front & Rear Camera Capture for Photos and Documents
+    async function openCamera(targetKey, preferredFacing = null) {
+      activeCamTarget = targetKey;
+      activeCamFacing = preferredFacing || (targetKey === "emp" ? "user" : "environment");
+
+      const modal = document.getElementById("cameraModal");
+      const video = document.getElementById("cameraStream");
+      if (!modal || !video) return;
+
+      modal.style.cssText = "position:fixed;inset:0;width:100vw;height:100vh;max-width:none;max-height:none;z-index:99999;background:#000;display:flex;flex-direction:column;justify-content:space-between;padding:12px;box-sizing:border-box;";
+      video.style.cssText = "width:100%;height:78vh;max-height:78vh;object-fit:contain;background:#000;border-radius:8px;";
+
+      ensureFullSizeCameraControls(modal);
+      modal.classList.add("open");
+      await startCameraStream(activeCamFacing);
+    }
+
+    function ensureFullSizeCameraControls(modal) {
+      if (document.getElementById("camSwitchBtn")) return;
+      const switchBtn = document.createElement("button");
+      switchBtn.id = "camSwitchBtn";
+      switchBtn.type = "button";
+      switchBtn.className = "btn btn-primary";
+      switchBtn.textContent = "Switch Front / Rear";
+      switchBtn.onclick = async () => {
+        activeCamFacing = activeCamFacing === "user" ? "environment" : "user";
+        await startCameraStream(activeCamFacing);
+      };
+
+      const snapBtn = modal.querySelector('button[onclick*="snapCameraPhoto"]');
+      if (snapBtn && snapBtn.parentElement) {
+        snapBtn.parentElement.insertBefore(switchBtn, snapBtn);
+      } else {
+        modal.appendChild(switchBtn);
+      }
+    }
+
+    async function startCameraStream(facingMode) {
+      const video = document.getElementById("cameraStream");
+      if (!video) return;
+      if (mediaStream) {
+        mediaStream.getTracks().forEach((t) => t.stop());
+        mediaStream = null;
+      }
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: facingMode },
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
+          },
+          audio: false
+        });
+        video.srcObject = mediaStream;
+        await video.play();
+      } catch (err) {
+        try {
+          mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+          video.srcObject = mediaStream;
+          await video.play();
+        } catch (err2) {
+          alert("Camera unavailable. Please allow camera permission or use Upload.");
+        }
+      }
+    }
+
+    function snapCameraPhoto() {
+      const video = document.getElementById("cameraStream");
+      if (video) compressImageTo100KB(video, activeCamTarget);
+      closeCamera();
+    }
+
+    function closeCamera() {
+      const modal = document.getElementById("cameraModal");
+      if (modal) {
+        modal.classList.remove("open");
+        modal.style.display = "none";
+      }
+      if (mediaStream) {
+        mediaStream.getTracks().forEach((t) => t.stop());
+        mediaStream = null;
+      }
+    }
+
+    function handleDocUpload(event, key) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        docStore[key] = { name: file.name, type: file.type, dataUrl: e.target.result };
+        const meta = document.getElementById("meta_" + key);
+        if (meta) {
+          meta.style.display = "inline-block";
+          meta.textContent = `Uploaded: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+        }
+        renderPhotoAndDocCards();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function addOtherDocSlot() {
+      const list = document.getElementById("otherDocsList");
+      if (!list) return;
+      const slotKey = "other_doc_" + (list.children.length + 1) + "_" + Date.now();
+      const div = document.createElement("div");
+      div.dataset.slotKey = slotKey;
+      div.style.cssText = "display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px;padding:8px;background:#fff;border:1px solid #e2e8f0;border-radius:6px;";
+      div.innerHTML = `
+        <input type="text" placeholder="Document Title" style="max-width:240px;" onchange="syncOtherDocs()">
+        <input type="file" accept="image/*,.pdf" style="max-width:220px;" onchange="attachOtherDocFile(this)">
+        <button type="button" class="btn btn-primary btn-sm" onclick="openCamera('${div.dataset.slotKey}', 'environment')">Rear Cam</button>
+        <button type="button" class="btn btn-dark btn-sm" onclick="openCamera('${div.dataset.slotKey}', 'user')">Front Cam</button>
+        <span class="badge-kb" style="display:none;"></span>
+        <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove();syncOtherDocs();">Remove</button>
+      `;
+      list.appendChild(div);
+    }
+
+    function attachOtherDocFile(inputEl) {
+      const file = inputEl.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        inputEl.dataset.fileName = file.name;
+        inputEl.dataset.fileData = e.target.result;
+        const badge = inputEl.parentElement.querySelector(".badge-kb");
+        if (badge) {
+          badge.style.display = "inline-block";
+          badge.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+        }
+        syncOtherDocs();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function syncOtherDocs() {
+      const arr = [];
+      document.querySelectorAll("#otherDocsList > div").forEach((row) => {
+        const title = row.querySelector('input[type="text"]')?.value || "Other Document";
+        const fileInput = row.querySelector('input[type="file"]');
+        const slotKey = row.dataset.slotKey;
+        if (fileInput?.dataset.fileData) {
+          arr.push({ title, name: fileInput.dataset.fileName, dataUrl: fileInput.dataset.fileData });
+        } else if (slotKey && docStore[slotKey]?.dataUrl) {
+          arr.push({ title, name: docStore[slotKey].name, dataUrl: docStore[slotKey].dataUrl });
+        }
+      });
+      docStore.other_docs = arr;
+    }
+
+    function addEduRow(data = {}) {
+      const c = document.getElementById("eduContainer");
+      if (!c) return;
+      const idx = c.children.length + 1;
+      const div = document.createElement("div");
+      div.className = "repeat-item";
+      div.innerHTML = `
+        <div class="repeat-head"><span>Qualification #${idx}</span><button type="button" class="btn btn-danger btn-sm no-print" onclick="this.closest('.repeat-item').remove()">Remove</button></div>
+        <table class="esr-table">
+          <tr>
+            <td><input type="text" name="edu_course[]" placeholder="Course (SSLC/PUC/Degree/D.Ed/B.Ed/PG)" value="${data.course || ""}"></td>
+            <td><input type="text" name="edu_type_mode[]" placeholder="Course Type, Mode & Year of Passing"></td>
+            <td><input type="text" name="edu_reg_langs[]" placeholder="Reg. No. & Languages 1, 2, 3"></td>
+          </tr>
+          <tr>
+            <td><input type="text" name="edu_subj_med[]" placeholder="Core Subjects & Medium"></td>
+            <td><input type="text" name="edu_marks_board[]" placeholder="% Marks, State & Board/University"></td>
+            <td><input type="text" name="edu_cert_no[]" placeholder="Certificate Number"></td>
+          </tr>
+        </table>`;
+      c.appendChild(div);
+    }
+
+    function addExamRow() {
+      const c = document.getElementById("examContainer");
+      if (!c) return;
+      const idx = c.children.length + 1;
+      const div = document.createElement("div");
+      div.className = "repeat-item";
+      div.innerHTML = `
+        <div class="repeat-head"><span>Departmental Exam / Training #${idx}</span><button type="button" class="btn btn-danger btn-sm no-print" onclick="this.closest('.repeat-item').remove()">Remove</button></div>
+        <table class="esr-table">
+          <tr>
+            <td><input type="text" name="exam_name[]" placeholder="Exam / Training Program Name & In/By"></td>
+            <td><input type="text" name="exam_date_reg[]" placeholder="Year, Session, Date of Passing & Reg. No."></td>
+            <td><input type="text" name="exam_cert_inst[]" placeholder="Certificate No., Cadre & Institution"></td>
+          </tr>
+        </table>`;
+      c.appendChild(div);
+    }
+
+    function addFamilyRow() {
+      const c = document.getElementById("familyContainer");
+      if (!c) return;
+      const idx = c.children.length + 1;
+      const div = document.createElement("div");
+      div.className = "repeat-item";
+      div.innerHTML = `
+        <div class="repeat-head"><span>Family Member #${idx}</span><button type="button" class="btn btn-danger btn-sm no-print" onclick="this.closest('.repeat-item').remove()">Remove</button></div>
+        <table class="esr-table">
+          <tr>
+            <td><input type="text" name="fam_rel_name[]" placeholder="Relation & Family Member Name"></td>
+            <td><input type="text" name="fam_gen_dob[]" placeholder="Gender, DOB & Dependent/Pensioner"></td>
+            <td><input type="text" name="fam_work_inc[]" placeholder="Working In, Annual Income & Disability %"></td>
+          </tr>
+          <tr>
+            <td colspan="3"><input type="text" name="fam_addr_mob[]" placeholder="Address, District, Taluka, Village, Pincode, Mobile & Email"></td>
+          </tr>
+        </table>`;
+      c.appendChild(div);
+    }
+
+    function addNomineeRow() {
+      const c = document.getElementById("nomineeContainer");
+      if (!c) return;
+      const idx = c.children.length + 1;
+      const div = document.createElement("div");
+      div.className = "repeat-item";
+      div.innerHTML = `
+        <div class="repeat-head"><span>Nomination #${idx}</span><button type="button" class="btn btn-danger btn-sm no-print" onclick="this.closest('.repeat-item').remove()">Remove</button></div>
+        <table class="esr-table">
+          <tr>
+            <td><input type="text" name="nom_for_pol[]" placeholder="Nomination For, Policy No., Form Type & Share %"></td>
+            <td><input type="text" name="nom_member_rel[]" placeholder="Family Member Name, Relation, Gender & DOB"></td>
+            <td><input type="text" name="nom_date_inv[]" placeholder="Date of Nomination & Invalid If Condition"></td>
+          </tr>
+          <tr>
+            <td colspan="3"><input type="text" name="nom_addr_alt[]" placeholder="Nominee Address/District/Taluka/Pincode/Mobile & Alternative Nominee"></td>
+          </tr>
+        </table>`;
+      c.appendChild(div);
+    }
+
+    function addPromoRow() {
+      const c = document.getElementById("promoContainer");
+      if (!c) return;
+      const idx = c.children.length + 1;
+      const div = document.createElement("div");
+      div.className = "repeat-item";
+      div.innerHTML = `
+        <div class="repeat-head"><span>Promotion / Demotion / Cadre Change #${idx}</span><button type="button" class="btn btn-danger btn-sm no-print" onclick="this.closest('.repeat-item').remove()">Remove</button></div>
+        <table class="esr-table">
+          <tr>
+            <td><input type="text" name="promo_type_dt[]" placeholder="Type (Promotion/Demotion/Cadre Change) & Effective Date"></td>
+            <td><input type="text" name="promo_before[]" placeholder="Before: Dept, District, Group, Payscale & Basic Pay"></td>
+            <td><input type="text" name="promo_after[]" placeholder="After: Dept, District, Group, New Payscale & New Basic"></td>
+          </tr>
+          <tr>
+            <td colspan="3"><input type="text" name="promo_inc_ord[]" placeholder="Additional/Stagnation Inc., Personal Pay, Next Inc. Date, Order No/Date & SB Date"></td>
+          </tr>
+        </table>`;
+      c.appendChild(div);
+    }
+
+    function collectFormData() {
+      syncOtherDocs();
+      const formEl = document.getElementById("esrForm");
+      const data = {};
+      if (formEl) {
+        const fd = new FormData(formEl);
+        for (const [k, v] of fd.entries()) {
+          if (k.endsWith("[]")) {
+            if (!data[k]) data[k] = [];
+            data[k].push(v);
+          } else {
+            data[k] = v;
+          }
+        }
+      }
+      data._boardTitle = document.querySelector(".board-title")?.innerText.trim() || "";
+      data._boardSubtitle = document.querySelector(".board-subtitle")?.innerText.trim() || "";
+      data._empPhoto = photoStore.emp;
+      data._famPhoto = photoStore.fam;
+      data._docs = docStore;
+      data._submittedAt = new Date().toISOString();
+      return data;
+    }
+
+    function renderPhotoAndDocCards() {
+      const photoDiv = document.getElementById("photoDownloadCards");
+      if (!photoDiv) return;
+      const data = collectFormData();
+      const baseName = getEmployeeFileBaseName(data);
+      let photoHtml = "";
+
+      if (photoStore.emp) {
+        photoHtml += `<div style="border:1px solid #cbd5e1;padding:10px;border-radius:8px;text-align:center;background:#f8fafc;">
+          <img src="${photoStore.emp}" style="width:100px;height:120px;object-fit:cover;border-radius:4px;"><br>
+          <a href="${photoStore.emp}" download="${baseName}_Photo.jpg" class="btn btn-success btn-sm" style="margin-top:6px;text-decoration:none;">&#11015; Photo (&le;100KB)</a>
+        </div>`;
+      }
+      if (photoStore.fam) {
+        photoHtml += `<div style="border:1px solid #cbd5e1;padding:10px;border-radius:8px;text-align:center;background:#f8fafc;">
+          <img src="${photoStore.fam}" style="width:130px;height:120px;object-fit:cover;border-radius:4px;"><br>
+          <a href="${photoStore.fam}" download="${baseName}_Family.jpg" class="btn btn-success btn-sm" style="margin-top:6px;text-decoration:none;">&#11015; Family (&le;100KB)</a>
+        </div>`;
+      }
+
+      Object.keys(docStore).forEach((dk) => {
+        if (dk === "other_docs") return;
+        const item = docStore[dk];
+        if (item && item.dataUrl) {
+          const ext = (item.name && item.name.split(".").pop()) || "jpg";
+          photoHtml += `<div style="border:1px solid #cbd5e1;padding:10px;border-radius:8px;text-align:center;background:#f8fafc;">
+            <div style="font-weight:800;font-size:0.78rem;margin-bottom:6px;">${dk.toUpperCase()}</div>
+            <a href="${item.dataUrl}" download="${baseName}_${dk}.${ext}" class="btn btn-primary btn-sm" style="text-decoration:none;">&#11015; ${dk}</a>
+          </div>`;
+        }
+      });
+
+      (docStore.other_docs || []).forEach((od, idx) => {
+        if (od && od.dataUrl) {
+          const ext = (od.name && od.name.split(".").pop()) || "jpg";
+          photoHtml += `<div style="border:1px solid #cbd5e1;padding:10px;border-radius:8px;text-align:center;background:#f8fafc;">
+            <div style="font-weight:800;font-size:0.78rem;margin-bottom:6px;">${od.title || "DOC_" + (idx + 1)}</div>
+            <a href="${od.dataUrl}" download="${baseName}_Doc_${idx + 1}.${ext}" class="btn btn-primary btn-sm" style="text-decoration:none;">&#11015; Doc ${idx + 1}</a>
+          </div>`;
+        }
+      });
+
+      photoDiv.innerHTML = photoHtml;
+    }
+
+    // Employee Excel (.xls) Download with Formatted Table & Embedded Photo (<Name>_<KGID>.xls)
+    function downloadEmployeeExcel(customData = null) {
+      const rec = customData || collectFormData();
+      if (!rec.emp_name_en && !rec.emp_name_kn && !rec.kgid_no) {
+        alert("Please enter Employee Name and KGID first.");
+        return;
+      }
+
+      const baseName = getEmployeeFileBaseName(rec);
+      const empPhotoHtml = rec._empPhoto
+        ? `<img src="${rec._empPhoto}" width="90" height="110" alt="Employee Photo">`
+        : "No Photo";
+      const famPhotoHtml = rec._famPhoto
+        ? `<img src="${rec._famPhoto}" width="120" height="100" alt="Family Photo">`
+        : "No Family Photo";
+
+      const keys = Object.keys(rec).filter((k) => !k.startsWith("_"));
+      let rowsHtml = "";
+      keys.forEach((k, idx) => {
+        const rawVal = rec[k];
+        const val = Array.isArray(rawVal) ? rawVal.join(" | ") : (rawVal ?? "");
+        const bg = idx % 2 === 0 ? "#ffffff" : "#f8fafc";
+        rowsHtml += `
+          <tr style="background:${bg};">
+            <td style="border:1px solid #94a3b8;padding:6px 10px;font-weight:bold;width:260px;">${escapeHtml(formatFieldLabel(k))}</td>
+            <td style="border:1px solid #94a3b8;padding:6px 10px;mso-number-format:'\\@';">${escapeHtml(val)}</td>
+          </tr>`;
+      });
+
+      const excelHtml = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office"
+              xmlns:x="urn:schemas-microsoft-com:office:excel"
+              xmlns="http://www.w3.org/TR/REC-html40">
+        <head>
+          <meta charset="UTF-8">
+          <!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
+          <x:Name>ESR_Record</x:Name>
+          <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
+          </x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+        </head>
+        <body style="font-family:Arial,sans-serif;">
+          <table style="border-collapse:collapse;width:100%;">
+            <tr>
+              <th colspan="2" style="background:#1e3a8a;color:#ffffff;font-size:14pt;padding:10px;border:1px solid #1e3a8a;">
+                KARNATAKA HRMS 2.0 - e-SERVICE REGISTER (ESR)
+              </th>
+            </tr>
+            <tr>
+              <th style="background:#e2e8f0;border:1px solid #94a3b8;padding:8px;">Employee Photo</th>
+              <th style="background:#e2e8f0;border:1px solid #94a3b8;padding:8px;">Family Photo</th>
+            </tr>
+            <tr>
+              <td style="border:1px solid #94a3b8;padding:8px;text-align:center;height:120px;">${empPhotoHtml}</td>
+              <td style="border:1px solid #94a3b8;padding:8px;text-align:center;height:120px;">${famPhotoHtml}</td>
+            </tr>
+            <tr>
+              <th style="background:#1e40af;color:#ffffff;border:1px solid #94a3b8;padding:8px;text-align:left;">Field Name</th>
+              <th style="background:#1e40af;color:#ffffff;border:1px solid #94a3b8;padding:8px;text-align:left;">Entered Details (Ready to Copy)</th>
+            </tr>
+            ${rowsHtml}
+          </table>
+        </body>
+        </html>`;
+
+      const blob = new Blob(["\uFEFF" + excelHtml], {
+        type: "application/vnd.ms-excel;charset=utf-8;"
+      });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `${baseName}.xls`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+    }
+
+    // Employee PDF Download named <Name>_<KGID>.pdf
+    function downloadEmployeePDF(customData = null) {
+      const rec = customData || collectFormData();
+      if (!rec.emp_name_en && !rec.emp_name_kn && !rec.kgid_no) {
+        alert("Please enter Employee Name and KGID first.");
+        return;
+      }
+      const baseName = getEmployeeFileBaseName(rec);
+      const prevTitle = document.title;
+      document.title = baseName;
+
+      if (window.jspdf && window.jspdf.jsPDF) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: "pt", format: "a4" });
+        let y = 40;
+        doc.setFontSize(14);
+        doc.text(`ESR Record - ${rec.emp_name_en || ""} (${rec.kgid_no || ""})`, 40, y);
+        y += 24;
+        doc.setFontSize(10);
+
+        Object.keys(rec).forEach((k) => {
+          if (k.startsWith("_")) return;
+          const val = Array.isArray(rec[k]) ? rec[k].join(" | ") : (rec[k] ?? "");
+          if (!String(val).trim()) return;
+          const lines = doc.splitTextToSize(`${formatFieldLabel(k)}: ${val}`, 515);
+          lines.forEach((line) => {
+            if (y > 790) {
+              doc.addPage();
+              y = 40;
+            }
+            doc.text(line, 40, y);
+            y += 14;
+          });
+        });
+
+        if (rec._empPhoto && rec._empPhoto.startsWith("data:image")) {
+          if (y > 650) {
+            doc.addPage();
+            y = 40;
+          }
+          try {
+            doc.addImage(rec._empPhoto, "JPEG", 40, y + 8, 90, 110);
+          } catch (e) {}
+        }
+
+        doc.save(`${baseName}.pdf`);
+        document.title = prevTitle;
+        return;
+      }
+
+      window.print();
+      setTimeout(() => {
+        document.title = prevTitle;
+      }, 1000);
+    }
+
+    function ensureEmployeeDownloadButtons() {
+      const panel = document.getElementById("panel-upload-docs");
+      if (!panel || document.getElementById("empDownloadActionsBar")) return;
+
+      const bar = document.createElement("div");
+      bar.id = "empDownloadActionsBar";
+      bar.style.cssText = "display:flex;flex-wrap:wrap;gap:10px;margin:12px 0;padding:10px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:6px;";
+
+      const pdfBtn = document.createElement("button");
+      pdfBtn.type = "button";
+      pdfBtn.className = "btn btn-success btn-sm";
+      pdfBtn.textContent = "Download PDF (<Name>_<KGID>.pdf)";
+      pdfBtn.onclick = () => downloadEmployeePDF();
+
+      const xlsBtn = document.createElement("button");
+      xlsBtn.type = "button";
+      xlsBtn.className = "btn btn-primary btn-sm";
+      xlsBtn.textContent = "Download Excel (<Name>_<KGID>.xls)";
+      xlsBtn.onclick = () => downloadEmployeeExcel();
+
+      bar.appendChild(pdfBtn);
+      bar.appendChild(xlsBtn);
+      panel.insertBefore(bar, panel.firstChild);
+    }
+
+    function getAllEmployeesList() {
+      try {
+        return JSON.parse(localStorage.getItem("hrms_all_employees_v1") || "[]");
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveCurrentToAllEmployees() {
+      if (!adminUnlocked) {
+        alert("Admin access required.");
+        return;
+      }
+      const rec = collectFormData();
+      if (!rec.emp_name_en && !rec.kgid_no) {
+        alert("Enter Employee Name or KGID first.");
+        return;
+      }
+      const list = getAllEmployeesList();
+      const idx = list.findIndex(
+        (item) =>
+          (rec.kgid_no && item.kgid_no === rec.kgid_no) ||
+          (rec.emp_name_en && item.emp_name_en === rec.emp_name_en)
+      );
+      if (idx > -1) list[idx] = rec;
+      else list.push(rec);
+      localStorage.setItem("hrms_all_employees_v1", JSON.stringify(list));
+      renderAdminEmployeeDropdown();
+      renderAllEmployeesSummary();
+      alert(`Saved record for ${getEmployeeFileBaseName(rec)}. Total: ${list.length}`);
+    }
+
+    function renderAllEmployeesSummary() {
+      const list = getAllEmployeesList();
+      const el = document.getElementById("allEmployeesSummary");
+      if (el) el.textContent = `Stored Employees: ${list.length}`;
+    }
+
+    // Admin Master Excel (.xls) Download for All Submitted Employees with Photos
+    function downloadAllEmployeesCSV() {
+      if (!adminUnlocked) {
+        alert("Admin access required.");
+        return;
+      }
+      const list = getAllEmployeesList();
+      if (!list.length) list.push(collectFormData());
+
+      const allKeys = Array.from(new Set(list.flatMap((r) => Object.keys(r).filter((k) => !k.startsWith("_")))));
+      const headerCells = [
+        `<th style="background:#1e40af;color:#ffffff;border:1px solid #94a3b8;padding:8px;">Sl. No</th>`,
+        `<th style="background:#1e40af;color:#ffffff;border:1px solid #94a3b8;padding:8px;">Employee Photo</th>`,
+        `<th style="background:#1e40af;color:#ffffff;border:1px solid #94a3b8;padding:8px;">Family Photo</th>`,
+        ...allKeys.map((k) => `<th style="background:#1e40af;color:#ffffff;border:1px solid #94a3b8;padding:8px;">${escapeHtml(formatFieldLabel(k))}</th>`)
+      ].join("");
+
+      const bodyRows = list.map((rec, i) => {
+        const bg = i % 2 === 0 ? "#ffffff" : "#f8fafc";
+        const empImg = rec._empPhoto ? `<img src="${rec._empPhoto}" width="75" height="90">` : "";
+        const famImg = rec._famPhoto ? `<img src="${rec._famPhoto}" width="95" height="80">` : "";
+        const cells = allKeys.map((k) => {
+          const v = rec[k];
+          const str = Array.isArray(v) ? v.join(" | ") : (v ?? "");
+          return `<td style="border:1px solid #94a3b8;padding:6px;mso-number-format:'\\@';">${escapeHtml(str)}</td>`;
+        }).join("");
+
+        return `<tr style="background:${bg};height:95px;">
+          <td style="border:1px solid #94a3b8;padding:6px;text-align:center;">${i + 1}</td>
+          <td style="border:1px solid #94a3b8;padding:6px;text-align:center;">${empImg}</td>
+          <td style="border:1px solid #94a3b8;padding:6px;text-align:center;">${famImg}</td>
+          ${cells}
+        </tr>`;
+      }).join("");
+
+      const masterExcel = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office"
+              xmlns:x="urn:schemas-microsoft-com:office:excel"
+              xmlns="http://www.w3.org/TR/REC-html40">
+        <head><meta charset="UTF-8"></head>
+        <body style="font-family:Arial,sans-serif;">
+          <table style="border-collapse:collapse;">
+            <tr>${headerCells}</tr>
+            ${bodyRows}
+          </table>
+        </body>
+        </html>`;
+
+      const blob = new Blob(["\uFEFF" + masterExcel], {
+        type: "application/vnd.ms-excel;charset=utf-8;"
+      });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `All_Employees_ESR_${new Date().toISOString().slice(0, 10)}.xls`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+    }
+
+    function saveLocalDraft() {
+      localStorage.setItem("karnataka_esr_draft_v3", JSON.stringify(collectFormData()));
+      alert("Draft saved!");
+    }
+
+    function loadLocalDraft() {
+      const raw = localStorage.getItem("karnataka_esr_draft_v3");
+      if (!raw) return;
+      try {
+        const data = JSON.parse(raw);
+        loadEmployeeIntoForm(data);
+      } catch (e) {}
+    }
+
+    function saveSettings() {
+      const urlInput = document.getElementById("gasUrlInput");
+      const pinInput = document.getElementById("adminPinInput");
+      if (urlInput) localStorage.setItem("esr_gas_url", urlInput.value.trim());
+      if (pinInput && pinInput.value.trim()) localStorage.setItem("esr_admin_pin", pinInput.value.trim());
+      alert("Settings saved!");
+    }
+
+    async function submitToGoogleSheet() {
+      const data = collectFormData();
+      if (!data.emp_name_en && !data.emp_name_kn) {
+        alert("Please enter employee name first.");
+        return;
+      }
+
+      const list = getAllEmployeesList();
+      const idx = list.findIndex(
+        (item) =>
+          (data.kgid_no && item.kgid_no === data.kgid_no) ||
+          (data.emp_name_en && item.emp_name_en === data.emp_name_en)
+      );
+      if (idx > -1) list[idx] = data;
+      else list.push(data);
+      localStorage.setItem("hrms_all_employees_v1", JSON.stringify(list));
+      localStorage.setItem("karnataka_esr_draft_v3", JSON.stringify(data));
+
+      const gasUrl = getActiveGasUrl();
+      if (!gasUrl || !gasUrl.startsWith("https://script.google.com/macros/s/")) {
+        alert("Saved locally! Use the PDF or Excel buttons to download your file.");
+        return;
+      }
+
+      const btn = document.getElementById("btnCloudSubmit");
+      const origText = btn ? btn.textContent : "";
+      if (btn) {
+        btn.textContent = "Submitting...";
+        btn.disabled = true;
+      }
+
+      try {
+        await fetch(gasUrl, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "submit", record: data })
+        });
+        alert("Submitted! You can now download your PDF or Excel (.xls) file named with your Name and KGID.");
+      } catch (err) {
+        alert("Submission error: " + (err && err.message ? err.message : "Network error"));
+      } finally {
+        if (btn) {
+          btn.textContent = origText;
+          btn.disabled = false;
+        }
+      }
+    }
+
+    function clearAllData() {
+      if (confirm("Clear current form draft?")) {
+        localStorage.removeItem("karnataka_esr_draft_v3");
+        location.reload();
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      removePart4bTabIfPresent();
+      cleanUploadTabExtras();
+      ensureEmployeeDownloadButtons();
+
+      addEduRow({ course: "SSLC" });
+      addEduRow({ course: "PUC" });
+      addEduRow({ course: "Degree / D.Ed / B.Ed" });
+      addExamRow();
+      addFamilyRow();
+      addNomineeRow();
+      addPromoRow();
+
+      const gasInput = document.getElementById("gasUrlInput");
+      if (gasInput) gasInput.value = getActiveGasUrl();
+      const pinInput = document.getElementById("adminPinInput");
+      if (pinInput) pinInput.value = getAdminPin();
+
+      loadLocalDraft();
+      renderPhotoAndDocCards();
+    });
+  </script>
+</body>
+</html>
